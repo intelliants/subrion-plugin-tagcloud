@@ -1,0 +1,4 @@
+.tag-page { margin: 20px 30px;list-style-type: none; }
+.tag-page > a {height: 46px; line-height: 46px;text-decoration: none; margin-right: 7px;}
+.tag-page > a:last-child {margin-right: 0;}
+.tag-page a:hover {text-decoration: none; }

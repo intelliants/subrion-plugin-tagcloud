@@ -1,0 +1,1 @@
+{include file='all-items-page.tpl' all_items=$items all_item_fields=$fields all_item_type=$type}

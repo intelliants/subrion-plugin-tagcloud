@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin name="tagcloud">
+	<title>Tagcloud</title>
+	<summary>Functionality of tag cloud</summary>
+	<author>Alex Boldyrev</author>
+	<contributor>Intelliants LLC</contributor>
+	<version>3.3.0</version>
+	<date>2015-05-29</date>
+	<compatibility>3.3</compatibility>
+
+	<pages>
+		<page name="tagcloud" url="tags/">Tags</page>
+	</pages>
+
+	<config group="miscellaneous" custom="1" name="tagcloud" type="divider">Tagcloud Configuration</config>
+	<config group="miscellaneous" custom="1" name="tagcloud_items_enabled" type="itemscheckbox" description="List of items tagcloud is enabled for"><![CDATA[]]></config>
+	<config group="miscellaneous" custom="1" name="tagcloud_items_implemented" type="hidden" description="List of items tagcloud is implemented for">autos,articles,listings,estates</config>
+	<config group="miscellaneous" custom="1" name="tag_num_limit" type="text" description="Maximum number of tags allowed">5</config>
+
+	<phrases>
+		<phrase category="common" key="tags">Tags</phrase>
+		<phrase category="common" key="tagcloud">Tagcloud</phrase>
+
+		<phrase category="frontend" key="page_title_tags">":tag" tagged :item</phrase>
+		<phrase category="frontend" key="no_items_with_tags">No items found with this tag</phrase>
+	</phrases>
+
+	<blocks>
+		<block name="tagcloud_view" title="Tags" collapsible="1" position="bottom" type="smarty">
+			<![CDATA[
+{if isset($tags) && $tags}
+	<div class="tagcloud">
+		{foreach $tags as $tag}
+			<a href="{$tag.url}" class="btn btn-mini btn-info" style="margin-bottom: 4px;">{$tag.tag}</a>
+		{/foreach}
+	</div>
+{/if}
+			]]>
+		</block>
+	</blocks>
+
+	<hooks>
+		<hook name="bootstrap" page_type="front">
+			<![CDATA[
+if (iaView::REQUEST_HTML == $iaView->getRequestType() && $iaView->blockExists('tagcloud_view'))
+{
+	$iaView->assign('tags', $iaCore->factoryPlugin('tagcloud')->getTags());
+}
+			]]>
+		</hook>
+		<hook name="phpCoreBeforePageDisplay">
+			<![CDATA[
+$iaView->add_css('_IA_URL_plugins/tagcloud/templates/front/css/style');
+			]]>
+		</hook>
+		<hook name="phpItemSaved">
+			<![CDATA[
+$oldTags = isset($old[$itemName . '_tags']) ? $old[$itemName . '_tags'] : '';
+
+if (isset($itemData[$itemName . '_tags']))
+{
+	$newTags = implode(',', array_slice(explode(',', $itemData[$itemName . '_tags']), 0, $iaCore->get('tags_num_limit', 5)));
+	$iaDb->update(array('id' => $itemId, $itemName . '_tags' => $newTags), null, null, $iaCore->factory('item')->getItemTable($itemName));
+
+	$tagcloud = $iaCore->factoryPlugin('tagcloud');
+	$tagcloud->setTags($itemName, $oldTags, $newTags);
+}
+			]]>
+		</hook>
+		<hook name="phpExtrasUninstallBefore">
+			<![CDATA[
+$iaItem = $iaCore->factory('item');
+$package_items = $iaItem->getItemsByPackage($extra);
+
+if (empty($package_items))
+{
+	return;
+}
+
+$enabled_items = $iaItem->getEnabledItemsForPlugin($extra);
+
+if ($enabled_items)
+{
+	foreach($enabled_items as $index => $itemName)
+	{
+		if (in_array($itemName, $package_items))
+		{
+			array_splice($enabled_items, $index, 1);
+		}
+	}
+
+	$iaItem->setEnabledItemsForPlugin($extra, $enabled_items);
+}
+			]]>
+		</hook>
+		<hook name="phpPackageItemChangedForPlugin" type="php" page_type="admin" filename="plugins/tagcloud/includes/hook.fields-handler.php"><![CDATA[]]></hook>
+	</hooks>
+
+	<install>
+		<sql>
+			<![CDATA[
+CREATE TABLE IF NOT EXISTS `{prefix}tags` (
+	`id` int(11) NOT NULL auto_increment,
+	`tag` varchar(64) NOT NULL default '',
+	`count` int(5) NOT NULL default '0',
+	`item` varchar(32) NOT NULL default '',
+	PRIMARY KEY  (`id`),
+	UNIQUE KEY `UNIQUE` (`tag`(32),`item`),
+	KEY `INDEX` (`item`(16)),
+	KEY `INDEX2` (`tag`(16))
+) {mysql_version};
+			]]>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<![CDATA[
+DROP TABLE IF EXISTS `{prefix}tags`;
+			]]>
+		</sql>
+	</uninstall>
+</plugin>
