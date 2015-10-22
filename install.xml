@@ -4,8 +4,8 @@
 	<summary>Functionality of tag cloud</summary>
 	<author>Alex Boldyrev</author>
 	<contributor>Intelliants LLC</contributor>
-	<version>3.3.0</version>
-	<date>2015-05-29</date>
+	<version>3.3.1</version>
+	<date>2015-10-22</date>
 	<compatibility>3.3</compatibility>
 
 	<pages>
@@ -40,17 +40,13 @@
 	</blocks>
 
 	<hooks>
-		<hook name="bootstrap" page_type="front">
+		<hook name="phpCoreBeforePageDisplay" page_type="front">
 			<![CDATA[
 if (iaView::REQUEST_HTML == $iaView->getRequestType() && $iaView->blockExists('tagcloud_view'))
 {
 	$iaView->assign('tags', $iaCore->factoryPlugin('tagcloud')->getTags());
+	$iaView->add_css('_IA_URL_plugins/tagcloud/templates/front/css/style');
 }
-			]]>
-		</hook>
-		<hook name="phpCoreBeforePageDisplay">
-			<![CDATA[
-$iaView->add_css('_IA_URL_plugins/tagcloud/templates/front/css/style');
 			]]>
 		</hook>
 		<hook name="phpItemSaved">
@@ -120,4 +116,12 @@ DROP TABLE IF EXISTS `{prefix}tags`;
 			]]>
 		</sql>
 	</uninstall>
+
+	<upgrade>
+		<sql version="3.3.1">
+			<![CDATA[
+DELETE FROM `{prefix}hooks` WHERE `name` = 'bootstrap' AND `extras` = 'tagcloud';
+			]]>
+		</sql>
+	</upgrade>
 </plugin>
