@@ -1,4 +1,6 @@
 <?php
+//##copyright##
+
 $plugin = 'tagcloud';
 
 $IA_TABLE_NAME_FIELDS = 'fields';
