@@ -2,11 +2,11 @@
 <plugin name="tagcloud">
 	<title>Tagcloud</title>
 	<summary>Functionality of tag cloud</summary>
-	<author>Alex Boldyrev</author>
+	<author>Intelliants LLC</author>
 	<contributor>Intelliants LLC</contributor>
-	<version>3.3.1</version>
-	<date>2015-10-22</date>
-	<compatibility>3.3</compatibility>
+	<version>4.0.0</version>
+	<date>2015-12-18</date>
+	<compatibility>4.0</compatibility>
 
 	<pages>
 		<page name="tagcloud" url="tags/">Tags</page>
@@ -15,7 +15,7 @@
 	<config group="miscellaneous" custom="1" name="tagcloud" type="divider">Tagcloud Configuration</config>
 	<config group="miscellaneous" custom="1" name="tagcloud_items_enabled" type="itemscheckbox" description="List of items tagcloud is enabled for"><![CDATA[]]></config>
 	<config group="miscellaneous" custom="1" name="tagcloud_items_implemented" type="hidden" description="List of items tagcloud is implemented for">autos,articles,listings,estates</config>
-	<config group="miscellaneous" custom="1" name="tag_num_limit" type="text" description="Maximum number of tags allowed">5</config>
+	<config group="miscellaneous" custom="1" name="tags_num_limit" type="text" description="Maximum number of tags">10</config>
 
 	<phrases>
 		<phrase category="common" key="tags">Tags</phrase>
@@ -25,13 +25,17 @@
 		<phrase category="frontend" key="no_items_with_tags">No items found with this tag</phrase>
 	</phrases>
 
+	<tooltips>
+		<tooltip key="tags_num_limit">in Tags block and on Tags page</tooltip>
+	</tooltips>
+
 	<blocks>
-		<block name="tagcloud_view" title="Tags" collapsible="1" position="bottom" type="smarty">
+		<block name="tagcloud_view" title="Tags" collapsible="0" position="right" type="smarty">
 			<![CDATA[
 {if isset($tags) && $tags}
 	<div class="tagcloud">
 		{foreach $tags as $tag}
-			<a href="{$tag.url}" class="btn btn-mini btn-info" style="margin-bottom: 4px;">{$tag.tag}</a>
+			<a href="{$tag.url}" style="font-size: {$tag.size}px;">{$tag.tag}</a>
 		{/foreach}
 	</div>
 {/if}

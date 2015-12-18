@@ -95,7 +95,7 @@ class iaTagcloud extends abstractCore
 
 		if ($items && !empty($items))
 		{
-			$tags = $this->iaCore->iaDb->all('`count`, `tag`, `item`', "`item` IN ('".implode("','", $items)."') ORDER BY RAND()", 0, count($items) * 10, 'tags');
+			$tags = $this->iaCore->iaDb->all('`count`, `tag`, `item`', "`item` IN ('".implode("','", $items)."') ORDER BY RAND()", 0, $this->iaCore->get('tags_num_limit', 10), 'tags');
 			$tags = $this->setSizes($tags);
 			$tags = $this->setUrls($tags);
 		}

@@ -1,4 +1,34 @@
-.tag-page { margin: 20px 30px;list-style-type: none; }
-.tag-page > a {height: 46px; line-height: 46px;text-decoration: none; margin-right: 7px;}
-.tag-page > a:last-child {margin-right: 0;}
-.tag-page a:hover {text-decoration: none; }
+.tag-page > a {
+	margin-right: 4px;
+}
+
+.tag-page > a:last-child {
+	margin-right: 0;
+}
+
+.tag-page > a:hover {
+	text-decoration: none;
+}
+
+
+.tagcloud > a {
+	line-height: 1;
+}
+
+.tagcloud > a:hover {
+	text-decoration: none;
+}
+
+
+.page-tagcloud .ia-item-panel {
+	margin-top: 5px;
+}
+
+.page-tagcloud .ia-item-panel > a {
+	margin-right: 2px;
+	padding: 2px 8px;
+}
+
+.page-tagcloud .ia-item-panel > a:last-child {
+	margin-right: 0;
+}

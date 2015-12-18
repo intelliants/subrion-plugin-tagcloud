@@ -1,4 +1,3 @@
-<h1>{lang key='tagcloud'}</h1>
 <div class="ia-items">
 	<div class="tag-page clearfix">
 	{foreach $tags as $tag}
